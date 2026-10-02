@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:16
+    container_name: postgres_db
+    restart: "no"
+    environment:
+      POSTGRES_DB: blog_tec
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: 011204rba
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - blog_tec
+
+  app:
+    image: blogtec-app:1.0.0
+    container_name: blogtec_crud
+    restart: always
+    ports:
+      - "5000:5000"
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=blog_tec
+      - DB_USER=admin
+      - DB_PASSWORD=011204rba
+    depends_on:
+      - db
+    networks:
+      - blog_tec
+
+volumes:
+  postgres_data:
+
+networks:
+  blog_tec:
+    external: true
